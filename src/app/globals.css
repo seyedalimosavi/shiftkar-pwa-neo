@@ -1,0 +1,874 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ============================================================
+   ShiftKar Neo — "Frost" design system (glassmorphism build)
+   The aurora is a STATIC pre-baked gradient (zero repaint) with a
+   fine noise grain and a soft vignette for depth. Chrome surfaces
+   (banner, nav bar, chips, sheets, dialogs) carry REAL frosted glass
+   — backdrop-filter blur + saturate + a specular top edge, the same
+   recipe as the original ShiftKar. Day-cell tiles stay blur-free
+   (translucent gradient + specular border) so the grid never stacks
+   40 composited blur layers. All motion is transform/opacity only.
+   ============================================================ */
+
+/* ---- Self-hosted IRANSansX (from the original ShiftKar project) ---- */
+@font-face {
+  font-family: "IRANSansX";
+  src: url("/fonts/IRANSansX-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANSansX";
+  src: url("/fonts/IRANSansX-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANSansX";
+  src: url("/fonts/IRANSansX-DemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANSansX";
+  src: url("/fonts/IRANSansX-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANSansX";
+  src: url("/fonts/IRANSansX-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANSansX";
+  src: url("/fonts/IRANSansX-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --radius: 1rem;
+  --font-sans: "IRANSansX", "Vazirmatn", Tahoma, system-ui, sans-serif;
+
+  /* ===== Native dark-mode declaration (force-dark opt-out) =====
+     Chromium's Force Dark (Chrome/Edge/Brave/Vivaldi/Opera/Mi Browser),
+     Samsung Internet's dark mode and WebView-force-dark all check this
+     signal: «this page ships its OWN dark theme — don't darken it».
+     Declared in CSS here AND as <meta name="color-scheme" content="dark light">
+     in layout.tsx (belt + suspenders). .dark / html:not(.dark) below pin
+     the actual scheme so form controls/scrollbars always match the UI. */
+  color-scheme: light dark;
+
+  /* ===== Hover language (theme-tuned) =====
+     LIGHT: the approved look — soft primary tint over a near-white pill
+     + a gentle neutral float shadow. DARK: a black 0.2 shadow is
+     invisible on navy and a 14% primary tint turns muddy — so dark gets
+     a stronger, cleaner primary wash + a deeper shadow that actually
+     reads as lift. Same recipe everywhere via these two tokens. */
+  --sk-hover-bg: var(--sk-primary-soft);
+  --sk-hover-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.2);
+
+  /* ===== Theme: purple — default ===== */
+  --sk-primary: #8b5cf6;
+  --sk-primary-strong: #7c3aed;
+  --sk-primary-soft: rgba(139, 92, 246, 0.14);
+  --sk-primary-ink: #6d28d9;
+  --sk-glow-a: rgba(139, 92, 246, 0.5);
+  --sk-glow-b: rgba(56, 189, 248, 0.35);
+  --sk-glow-c: rgba(244, 114, 182, 0.3);
+
+  --background: #f4f2fb;
+  /* solid opaque surface for overlays (tour tooltip, pop-ups) — engines
+     without a reliable backdrop-filter (Mi Browser) still get a clean card */
+  --sk-sheet-solid: #ffffff;
+  --foreground: #171326;
+  --card: rgba(255, 255, 255, 0.72);
+  --card-foreground: #171326;
+  --popover: #ffffff;
+  --popover-foreground: #171326;
+  --primary: var(--sk-primary);
+  --primary-foreground: #ffffff;
+  --secondary: rgba(255, 255, 255, 0.6);
+  --secondary-foreground: #171326;
+  --muted: rgba(23, 19, 38, 0.06);
+  --muted-foreground: #5d5875;
+  --accent: var(--sk-primary-soft);
+  --accent-foreground: var(--sk-primary-ink);
+  --destructive: #e11d48;
+  --border: rgba(23, 19, 38, 0.1);
+  --input: rgba(23, 19, 38, 0.12);
+  --ring: var(--sk-primary);
+  --chart-1: var(--sk-primary);
+  --chart-2: #0ea5a0;
+  --chart-3: #f59e0b;
+  --chart-4: #ec4899;
+  --chart-5: #10b981;
+
+  /* Surface tokens (light) */
+  --sk-bg: #eef0fa;
+  --sk-surface: rgba(255, 255, 255, 0.62);
+  --sk-surface-strong: rgba(255, 255, 255, 0.94);
+  --sk-border: rgba(255, 255, 255, 0.75);
+  --sk-border-soft: rgba(23, 19, 38, 0.08);
+  --sk-glass-hi: rgba(255, 255, 255, 0.6);
+  --sk-glass-lo: rgba(255, 255, 255, 0.26);
+  --sk-specular: rgba(255, 255, 255, 0.95);
+  --sk-sheen: rgba(255, 255, 255, 0.2);
+  --sk-sheet-bg: rgba(255, 255, 255, 0.88);
+  /* Compact cell height — the classic ShiftKar proportions. Viewport-adaptive:
+     grows a little on tall screens, never exceeds 64px (no rubber tiles),
+     never drops below 48px. A 6-row month that doesn't fit scrolls the
+     swipeable body internally — nothing is ever stretched or cut. */
+  --sk-cell-h: clamp(48px, 8.4dvh, 64px);
+  --sk-text: #191430;
+  --sk-text-muted: #5f5a7a;
+  --sk-text-faint: #8d88a8;
+  --sk-shadow: 0 10px 34px -14px rgba(60, 40, 120, 0.25);
+  --sk-shadow-float: 0 18px 44px -16px rgba(60, 40, 120, 0.32);
+
+  /* Shift color language (consistent across themes) */
+  --sk-day: #d97706;
+  --sk-day-soft: rgba(217, 119, 6, 0.13);
+  --sk-day-ink: #92400e;
+  --sk-night: #6366f1;
+  --sk-night-soft: rgba(99, 102, 241, 0.13);
+  --sk-night-ink: #4338ca;
+  --sk-rest: #10b981;
+  --sk-rest-soft: rgba(16, 185, 129, 0.13);
+  --sk-rest-ink: #047857;
+  --sk-holiday: #e11d48;
+  --sk-holiday-soft: rgba(225, 29, 72, 0.1);
+  --sk-note: rgba(250, 204, 21, 0.14);
+  --sk-note-ink: #854d0e;
+}
+
+/* ===== Theme palettes — the original ShiftKar six ===== */
+[data-theme="blue"] {
+  --sk-primary: #3d6bf5;
+  --sk-primary-strong: #2f55d4;
+  --sk-primary-soft: rgba(61, 107, 245, 0.14);
+  --sk-primary-ink: #2547b8;
+  --sk-glow-a: rgba(61, 107, 245, 0.5);
+  --sk-glow-b: rgba(56, 189, 248, 0.35);
+  --sk-glow-c: rgba(99, 102, 241, 0.3);
+}
+[data-theme="emerald"] {
+  --sk-primary: #0f9d72;
+  --sk-primary-strong: #0b7d5b;
+  --sk-primary-soft: rgba(15, 157, 114, 0.14);
+  --sk-primary-ink: #0a6b4e;
+  --sk-glow-a: rgba(15, 157, 114, 0.5);
+  --sk-glow-b: rgba(163, 230, 53, 0.3);
+  --sk-glow-c: rgba(20, 184, 166, 0.3);
+}
+[data-theme="purple"] {
+  --sk-primary: #8b5cf6;
+  --sk-primary-strong: #7c3aed;
+  --sk-primary-soft: rgba(139, 92, 246, 0.14);
+  --sk-primary-ink: #6d28d9;
+  --sk-glow-a: rgba(139, 92, 246, 0.5);
+  --sk-glow-b: rgba(56, 189, 248, 0.35);
+  --sk-glow-c: rgba(244, 114, 182, 0.3);
+}
+[data-theme="orange"] {
+  --sk-primary: #f46b16;
+  --sk-primary-strong: #e05a0a;
+  --sk-primary-soft: rgba(244, 107, 22, 0.14);
+  --sk-primary-ink: #c2410c;
+  --sk-glow-a: rgba(244, 107, 22, 0.5);
+  --sk-glow-b: rgba(251, 113, 133, 0.4);
+  --sk-glow-c: rgba(250, 204, 21, 0.35);
+}
+[data-theme="rose"] {
+  --sk-primary: #f43f5e;
+  --sk-primary-strong: #e11d48;
+  --sk-primary-soft: rgba(244, 63, 94, 0.13);
+  --sk-primary-ink: #be123c;
+  --sk-glow-a: rgba(244, 63, 94, 0.45);
+  --sk-glow-b: rgba(217, 70, 239, 0.35);
+  --sk-glow-c: rgba(251, 113, 133, 0.35);
+}
+[data-theme="teal"] {
+  --sk-primary: #0ea5a0;
+  --sk-primary-strong: #0d8f8b;
+  --sk-primary-soft: rgba(14, 165, 160, 0.14);
+  --sk-primary-ink: #0f766e;
+  --sk-glow-a: rgba(14, 165, 160, 0.5);
+  --sk-glow-b: rgba(56, 189, 248, 0.4);
+  --sk-glow-c: rgba(16, 185, 129, 0.3);
+}
+
+/* ===== Dark mode ===== */
+.dark {
+  color-scheme: dark;
+  --background: #0a0d1a;
+  --sk-sheet-solid: #131829;
+  --foreground: #eef0fb;
+  --card: rgba(255, 255, 255, 0.055);
+  --card-foreground: #eef0fb;
+  --popover: #151a2e;
+  --popover-foreground: #eef0fb;
+  --primary: var(--sk-primary);
+  --primary-foreground: #ffffff;
+  --secondary: rgba(255, 255, 255, 0.07);
+  --secondary-foreground: #eef0fb;
+  --muted: rgba(255, 255, 255, 0.07);
+  --muted-foreground: #9aa1c4;
+  --accent: var(--sk-primary-soft);
+  --accent-foreground: #c4b5fd;
+  --destructive: #f43f5e;
+  --border: rgba(255, 255, 255, 0.09);
+  --input: rgba(255, 255, 255, 0.14);
+  --ring: var(--sk-primary);
+
+  --sk-bg: #0a0e1f;
+  --sk-surface: rgba(255, 255, 255, 0.07);
+  /* «تیره‌تیره» FIX: this was rgba(17,22,42,0.97) — an OPAQUE navy that
+     made the selected A chip, the month/year pill and the active
+     segmented option read as dark BLACK BOXES against the lighter glass
+     buttons around them (light mode never had this problem: white 94%
+     ≈ the glass family). Now it is the same material as its siblings,
+     just a step brighter — the dark-mode mirror of the light hierarchy. */
+  --sk-surface-strong: rgba(255, 255, 255, 0.16);
+  --sk-border: rgba(255, 255, 255, 0.17);
+  --sk-border-soft: rgba(255, 255, 255, 0.07);
+  --sk-glass-hi: rgba(255, 255, 255, 0.135);
+  --sk-glass-lo: rgba(255, 255, 255, 0.05);
+  --sk-specular: rgba(255, 255, 255, 0.18);
+  --sk-sheen: rgba(255, 255, 255, 0.08);
+  --sk-sheet-bg: rgba(15, 19, 38, 0.92);
+  --sk-text: #eef0fb;
+  --sk-text-muted: #a3aacb;
+  --sk-text-faint: #6b7394;
+  --sk-shadow: 0 12px 36px -14px rgba(0, 0, 0, 0.6);
+  --sk-shadow-float: 0 20px 50px -16px rgba(0, 0, 0, 0.7);
+  /* Dark hover: 20% primary over the navy surface = a clean glass-blue
+     wash (14% reads muddy); deeper neutral shadow = real lift, no halo
+     (the earlier colored glow read as a stuck halo on phones). */
+  --sk-hover-bg: color-mix(in srgb, var(--sk-primary) 20%, transparent);
+  --sk-hover-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.6);
+
+  --sk-day: #fbbf24;
+  --sk-day-soft: rgba(251, 191, 36, 0.14);
+  --sk-day-ink: #fcd34d;
+  --sk-night: #818cf8;
+  --sk-night-soft: rgba(129, 140, 248, 0.15);
+  --sk-night-ink: #c7d2fe;
+  --sk-rest: #34d399;
+  --sk-rest-soft: rgba(52, 211, 153, 0.13);
+  --sk-rest-ink: #6ee7b7;
+  --sk-holiday: #fb7185;
+  --sk-holiday-soft: rgba(251, 113, 133, 0.13);
+  --sk-note: rgba(253, 224, 71, 0.1);
+  --sk-note-ink: #fde68a;
+}
+
+/* NOTE: pinning light-scheme for forced-light is done INLINE in
+   applyThemeToDom (store.ts) — LightningCSS strips the
+   `html:not(.dark) { color-scheme: light }` rule at build time. */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    height: 100%;
+    overscroll-behavior: none;
+  }
+  body {
+    @apply text-foreground;
+    background: var(--sk-bg);
+    font-family: var(--font-sans);
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+  }
+  ::selection {
+    background: var(--sk-primary-soft);
+  }
+}
+
+/* ============ Static aurora backdrop ============
+   A pre-baked gradient stack — five soft color pools + vignette + a
+   fine SVG noise grain that sells the "frosted" material.
+   HALO FIX («هاله/فلیکر»): short fade distances (58–62%) made each pool
+   read as a visible CIRCLE — a distinct halo of the accent color on
+   phone GPUs (worst on Mi Browser / mid-range panels, light AND dark).
+   Fix: blobs are now ~1.6× larger with the color stop pulled down and
+   the fade stretched to 72–78%, so the falloff spans hundreds of px and
+   no ring edge is resolvable; overall opacity cut ~35% keeps glass
+   supplied with color WITHOUT any perceivable pool. Paints once.
+   translateZ(0) pins it to its own composited layer. */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+  background:
+    radial-gradient(72vmax 72vmax at 88% -8%, var(--sk-glow-a), transparent 74%),
+    radial-gradient(60vmax 60vmax at -14% 24%, var(--sk-glow-b), transparent 72%),
+    radial-gradient(66vmax 66vmax at 112% 62%, var(--sk-glow-c), transparent 74%),
+    radial-gradient(64vmax 64vmax at 14% 108%, var(--sk-glow-a), transparent 72%),
+    radial-gradient(48vmax 48vmax at 58% 42%, var(--sk-glow-b), transparent 76%),
+    radial-gradient(120vmax 120vmax at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.2) 100%);
+  opacity: 0.45;
+}
+.dark .aurora-bg {
+  opacity: 0.5;
+}
+.aurora-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  /* fine grain also DITHERS the aurora gradients — kills the banded
+     edges that show through translucent surfaces on OLED screens */
+  opacity: 0.07;
+}
+.dark .aurora-bg::after {
+  opacity: 0.09;
+}
+
+/* ============ Real frosted glass (the original ShiftKar recipe) ============
+   blur + saturate over the static aurora + a specular 1px top edge
+   that makes the surface read as glass. BALANCED recipe: blur(20px)
+   saturate(1.6) over a more opaque fill — glassy but quiet, text stays
+   crisp. Used ONLY on chrome surfaces (banner, month nav, chips, bottom
+   nav, sheets, tooltips). Never on cards that contain scrollers (see
+   .card-soft below): a backdrop-filter element with a scrolling inner
+   area smears on Chrome Android. */
+.glass {
+  background: linear-gradient(155deg, var(--sk-glass-hi), var(--sk-glass-lo));
+  border: 1px solid var(--sk-border);
+  box-shadow:
+    var(--sk-shadow),
+    inset 0 1px 0 var(--sk-specular);
+  /* Promote to its own composited layer: Chrome Android samples the
+     backdrop in 256px tiles and the seams show as light/dark BANDS
+     across big glass surfaces (the reported «گلیچ گرافیکی»). One
+     layer = one sampling pass = no seams. */
+  transform: translateZ(0);
+}
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .glass {
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+  }
+}
+.glass-strong {
+  background: linear-gradient(160deg, var(--sk-glass-hi), var(--sk-glass-lo));
+  border: 1px solid var(--sk-border);
+  box-shadow:
+    var(--sk-shadow-float),
+    inset 0 1px 0 var(--sk-specular);
+  transform: translateZ(0);
+}
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .glass-strong {
+    -webkit-backdrop-filter: blur(24px) saturate(1.7);
+    backdrop-filter: blur(24px) saturate(1.7);
+  }
+}
+
+/* Translucent card WITHOUT backdrop-filter — for large surfaces that
+   scroll internally (table view, fullscreen table). Same glass fill,
+   border and specular edge; no blur layer to smear while the inner
+   table scrolls. The static aurora behind keeps the frosted feel. */
+.card-soft {
+  background: linear-gradient(160deg, var(--sk-glass-hi), var(--sk-glass-lo));
+  border: 1px solid var(--sk-border);
+  box-shadow:
+    var(--sk-shadow),
+    inset 0 1px 0 var(--sk-specular);
+}
+
+/* ============ Month/year title pill (original .cal-title-btn) ============
+   COMPACT pill (user: «کادر سال و ماه خیلی بزرگه»): hugs its content
+   (min-width floor for the caret separation) instead of stretching
+   flex-1 across the whole nav row. The name is CENTERED (flex-1 text
+   span) and the caret is pushed to the far END edge of the pill
+   (user: «فلش باید بره انتهای کادر نه چسبیده به اسم») — the old
+   space-between/justify-center tug-of-war is gone: the text span owns
+   the slack, the caret owns the edge. */
+.sk-title-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 1 auto;
+  min-width: 140px;
+  max-width: 100%;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--sk-surface-strong);
+  border: 1px solid var(--sk-border);
+  box-shadow: inset 0 1px 0 var(--sk-specular);
+  font-weight: 800;
+  font-size: 14.5px;
+  transition:
+    border-color 0.15s ease-out,
+    background 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+}
+.sk-title-btn > span:first-of-type {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sk-title-btn:hover {
+  /* Same recipe in both themes via tokens — light keeps the approved
+     soft tint, dark gets the tuned clean wash + visible lift. */
+  background: var(--sk-hover-bg);
+  border-color: color-mix(in srgb, var(--sk-primary) 40%, transparent);
+  box-shadow:
+    var(--sk-hover-shadow),
+    inset 0 1px 0 var(--sk-specular);
+}
+.sk-title-btn .sk-title-caret {
+  color: var(--sk-primary);
+  display: flex;
+  flex-shrink: 0;
+}
+/* Opaque sticky thead — rows scrolling under a translucent header look
+   like bleed-through (a reported glitch). Layering the translucent glass
+   fill OVER the opaque page background gives a fully opaque composite
+   that still matches the card's frosted tone. */
+.sk-thead th,
+.sk-thead {
+  background:
+    linear-gradient(var(--sk-glass-hi), var(--sk-glass-hi)),
+    var(--sk-bg);
+}
+
+/* Frosted tile for day cells — glass LOOK with zero backdrop-filter
+   (30-42 cells must never each own a composited blur layer). A subtle
+   radial sheen at the top edge + a translucent fill lets a HINT of the
+   aurora through, so tiles read as frosted panes while staying clean
+   and even. */
+.sk-tile {
+  background:
+    radial-gradient(130% 60% at 50% 0%, var(--sk-sheen), transparent 60%),
+    linear-gradient(160deg, var(--sk-glass-hi), var(--sk-glass-lo));
+  border: 1px solid var(--sk-border);
+  box-shadow:
+    inset 0 1px 0 var(--sk-specular),
+    0 2px 10px -6px rgba(0, 0, 0, 0.28);
+}
+.sk-tile:hover {
+  border-color: color-mix(in srgb, var(--sk-primary) 45%, transparent);
+}
+.text-gradient {
+  background: linear-gradient(120deg, var(--sk-primary), var(--sk-glow-b) 55%, var(--sk-glow-a));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ============ Motion primitives ============
+   ALL entrance animations are OPACITY-ONLY: transforming an ancestor of
+   a backdrop-filter surface (or of 40 gradient tiles) forces per-frame
+   backdrop recomposites — the source of the reported graphic glitches
+   on Chrome Android. A quiet cross-fade is buttery AND glitch-free. */
+.sk-anim-next {
+  animation: sk-fade 0.18s ease-out both;
+}
+.sk-anim-prev {
+  animation: sk-fade 0.18s ease-out both;
+}
+
+/* Fullscreen table entrance — pure fade, ends at transform:none
+   so the overlay never carries a permanent stacking context */
+.sk-fs-in {
+  animation: sk-fade 0.2s ease-out both;
+}
+
+/* Per-cell entrance — staggered via inline animation-delay. */
+.sk-cell-in {
+  animation: sk-cell-fade 0.16s ease-out both;
+}
+@keyframes sk-cell-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Today pulse (go-to-today highlight) */
+.sk-pulse {
+  animation: sk-pulse 1s ease-out both;
+}
+@keyframes sk-pulse {
+  0% { box-shadow: 0 0 0 0 var(--sk-primary-soft); }
+  45% { box-shadow: 0 0 0 9px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* Entrance helpers used by views that replaced framer-motion with CSS
+   (opacity-only — see the motion primitives note above) */
+.sk-rise {
+  animation: sk-fade 0.28s ease-out both;
+}
+.sk-fade-in {
+  animation: sk-fade 0.22s ease-out both;
+}
+.sk-onb-in {
+  animation: sk-fade 0.26s ease-out both;
+}
+
+/* ============ Scrollbar ============
+   Scrolling stays fully functional (months/boards scroll on small
+   phones) — only the scrollbar INDICATOR is hidden so the edge stays
+clean, the way native mobile apps behave. */
+.sk-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sk-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* ============ Persian numerals helper ============ */
+.fa-digits {
+  font-feature-settings: "ss01";
+}
+
+/* ============ Safe areas ============ */
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.5rem);
+}
+
+/* ============ Bottom sheet (original ShiftKar parity) ============
+   Collapsed ≤86dvh with a scrollable body; expands to fullscreen via
+   swipe-up / scroll-to-end / handle tap. Transform+height only. */
+body.sk-sheet-open {
+  overflow: hidden;
+}
+
+.sk-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(8, 12, 26, 0.45);
+  animation: sk-overlay-in 0.24s ease-out both;
+}
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .sk-sheet-overlay {
+    -webkit-backdrop-filter: blur(7px) saturate(1.2);
+    backdrop-filter: blur(7px) saturate(1.2);
+  }
+}
+.sk-sheet-overlay.is-closing {
+  animation: sk-overlay-out 0.24s ease-in both;
+}
+@keyframes sk-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes sk-overlay-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Sheet: softly translucent over the blurred overlay (glassier than the
+   old near-opaque build) while keeping a solid-enough body for reliable
+   touch scrolling on mobile Chrome — no backdrop-filter on the sheet
+   itself (the original's Android anti-flicker wisdom). */
+.sk-sheet {
+  width: 100%;
+  max-width: 560px;
+  max-height: 86dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(165deg, var(--sk-sheet-bg), var(--sk-sheet-bg));
+  border: 1px solid var(--sk-border);
+  border-bottom: none;
+  border-radius: 26px 26px 0 0;
+  box-shadow:
+    0 -12px 40px -10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 var(--sk-specular);
+  /* `backwards` (NOT both): after the entrance ends the base state (= final
+     keyframe) applies, so inline drag transforms keep working */
+  animation: sk-sheet-in 0.26s cubic-bezier(0.22, 0.8, 0.36, 1) backwards;
+  transition:
+    max-height 0.26s cubic-bezier(0.22, 0.8, 0.36, 1),
+    border-radius 0.26s ease-out;
+  overflow: hidden;
+}
+.sk-sheet.is-closing {
+  animation: sk-sheet-out 0.24s ease-in both;
+}
+.sk-sheet.is-fullscreen {
+  height: 100dvh;
+  max-height: 100dvh;
+  border-radius: 0;
+}
+@keyframes sk-sheet-in {
+  from { transform: translate3d(0, 100%, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+@keyframes sk-sheet-out {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, 100%, 0); }
+}
+
+/* Handle — pill indicator, doubles as the expand/collapse toggle */
+.sk-sheet-handle {
+  width: 42px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--sk-text-faint);
+  opacity: 0.45;
+  margin: 10px auto 2px;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease-out;
+}
+.sk-sheet-handle:active {
+  opacity: 0.8;
+}
+
+.sk-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 10px;
+  border-bottom: 1px solid var(--sk-border-soft);
+  flex-shrink: 0;
+}
+.sk-sheet-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sk-sheet-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  color: var(--sk-text-muted);
+  background: var(--sk-surface);
+  border: 1px solid var(--sk-border-soft);
+  transition: color 0.15s ease-out, background 0.15s ease-out;
+}
+.sk-sheet-btn:hover {
+  color: var(--sk-primary);
+  background: var(--sk-hover-bg);
+}
+
+.sk-sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============ Tab transition + nav pill (pure CSS, no framer-motion) ============ */
+.sk-tab-in {
+  animation: sk-tab-in 0.18s cubic-bezier(0.22, 0.8, 0.36, 1) both;
+}
+@keyframes sk-tab-in {
+  from { transform: translate3d(0, 10px, 0); opacity: 0; }
+  to   { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+.sk-nav-pill {
+  animation: sk-pill-in 0.24s cubic-bezier(0.22, 0.8, 0.36, 1) both;
+}
+@keyframes sk-pill-in {
+  from { transform: scale(0.86); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.sk-splash {
+  animation: sk-fade 0.3s ease-out both;
+}
+.sk-splash-in {
+  animation: sk-splash-pop 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+@keyframes sk-splash-pop {
+  from { transform: scale(0.86); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+@keyframes sk-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============ Outlined option cards — the original settings' signature =
+   2px borders everywhere; the active option wears the primary ring and
+   a soft primary glow, exactly like .theme-option / .theme-mode-option
+   of the original app. */
+.sk-outline {
+  border: 2px solid var(--sk-border-soft);
+  background: var(--sk-surface);
+  box-shadow: none;
+  transition:
+    border-color 0.15s ease-out,
+    background 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+}
+.sk-outline:hover {
+  border-color: color-mix(in srgb, var(--sk-primary) 45%, transparent);
+}
+.sk-outline.is-active {
+  border-color: var(--sk-primary);
+  background: var(--sk-primary-soft);
+  box-shadow: 0 8px 22px -12px var(--sk-glow-a);
+}
+
+/* Segmented control (original .segmented) */
+.sk-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 5px;
+  padding: 5px;
+  background: var(--sk-surface);
+  border: 1px solid var(--sk-border-soft);
+  border-radius: 16px;
+}
+.sk-seg-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  border-radius: 11px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--sk-text-muted);
+  transition: color 0.15s ease-out, background 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+.dark .sk-seg-item {
+  color: var(--sk-text-muted);
+}
+.sk-seg-item:hover {
+  color: var(--sk-primary);
+}
+.sk-seg-item.is-active {
+  background: var(--sk-surface-strong);
+  color: var(--sk-primary);
+  box-shadow:
+    0 3px 10px -4px rgba(0, 0, 0, 0.25),
+    inset 0 0 0 1.5px var(--sk-primary);
+}
+
+/* Theme swatch (original .theme-swatch) */
+.sk-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.35),
+    0 3px 8px -2px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 0.15s ease-out;
+}
+.sk-outline.is-active .sk-swatch {
+  box-shadow:
+    0 0 0 2px var(--sk-bg),
+    0 0 0 4.5px var(--sk-primary);
+}
+
+/* Check badge for pickers (original .view-check) */
+.sk-check-badge {
+  position: absolute;
+  top: 7px;
+  inset-inline-end: 7px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--sk-primary);
+  color: #fff;
+  box-shadow: 0 3px 8px -3px var(--sk-glow-a);
+}
+
+/* Install steps list */
+.install-steps li::marker {
+  color: var(--sk-primary);
+  font-weight: 800;
+}
+
+/* View-picker previews (original .view-preview) — mini calendar/table art */
+.vp-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+  width: 96px;
+  padding: 5px;
+  border-radius: 9px;
+  background: var(--sk-surface-strong);
+  border: 1px solid var(--sk-border-soft);
+}
+.vp-head {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--sk-primary);
+  opacity: 0.75;
+  margin-bottom: 2px;
+}
